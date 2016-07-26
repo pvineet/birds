@@ -23,7 +23,7 @@ def parse_images_page(response):
     return 0
 
 response = requests.get(bird_images_url)
-print type(response.status_code)
+#print type(response.status_code)
 if(response.status_code == 200):
     print "Page available"
 else:

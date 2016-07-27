@@ -19,7 +19,7 @@ def make_family_dir(name):
     with open(file_name) as family_csvfile:
         reader = csv.DictReader(family_csvfile)
 	for row in reader:
-            path = name+"/"+row['family_name']
+            path = name+"/"+row['family_name'].lower()
 	    make_dir(path)
     family_csvfile.close()
     os.rename(current_dir + "/" + file_name, base_path + "/" + name + "/" + file_name)

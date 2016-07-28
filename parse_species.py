@@ -1,3 +1,4 @@
+import urllib
 import os
 import csv
 from bs4 import BeautifulSoup,UnicodeDammit
@@ -25,17 +26,20 @@ def get_specie_page(specie):
     if(response.status_code == 200):
     	page_content = BeautifulSoup(response.content, 'html.parser')
         #print os.getcwd()
-	file_name = get_specie_dir(specie)+"/"+specie['latin_name'].lower().replace(" ","_")+".csv"
-	with open(file_name, 'wb') as csvfile:
-	    fieldnames = ['page_url', 'image_url'] 
-	    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-	    writer.writeheader()
-	    for option in page_content.find_all('option'):
-	    	page_url = base_url +"/"+option.parent.get('onchange').split('+')[0].split('(')[1].strip("'")+option.get('value')
-		if "Bird_Group_ID" not in page_url:
-	    	    #print get_image_url(page_url)
-	    	    writer.writerow({'page_url':page_url, 'image_url':get_image_url(page_url)})
-    	csvfile.close()
+        file_name = get_specie_dir(specie)+"/"+specie['latin_name'].lower().replace(" ","_")+".csv"
+        with open(file_name, 'wb') as csvfile:
+            fieldnames = ['page_url', 'image_url']
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+            count = 0
+            for option in page_content.find_all('option'):
+                page_url = base_url +"/"+option.parent.get('onchange').split('+')[0].split('(')[1].strip("'")+option.get('value')
+                if "Bird_Group_ID" not in page_url:
+                    #print get_image_url(page_url)
+                    urllib.urlretrieve(get_image_url(page_url), get_specie_dir(specie)+"/"+str(count)+".jpg")
+                    count = count+1
+                    writer.writerow({'page_url':page_url, 'image_url':get_image_url(page_url)})
+        csvfile.close()
 	return "Page parsed"
     else:
         return "Error in %s page" % specie['latin_name']

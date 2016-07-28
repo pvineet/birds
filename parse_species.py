@@ -11,14 +11,20 @@ dir_mode = 0775
 
 def get_specie_page(specie):
     response = requests.get(specie['href'])
-    print specie['common_name']
+    print specie['latin_name']
     if(response.status_code == 200):
     	page_content = BeautifulSoup(response.content, 'html.parser')
 	#for dropdown in page_content.find_all('select'):
 	#    print dropdown.__dict__
+        print os.getcwd()
+	file_name = get_specie_dir(specie)+"/"+specie['latin_name'].lower().replace(" ","_")+".csv"
+	with open(file_name, 'wb') as csvfile:
+	    fieldnames = ['page_url', 'image_url'] 
+	    writer = csv.DictWriter(csvfile)
 	for option in page_content.find_all('option'):
 	    page_url = base_url +"/"+option.parent.get('onchange').split('+')[0].split('(')[1].strip("'")+option.get('value')
-        return "Page parsed"
+        csvfile.close()
+	return "Page parsed"
     else:
         return "Error in %s page" % specie['latin_name']
     
@@ -30,9 +36,7 @@ def write_image_csv(specie):
 #we need specie name, page href, 
 #We dump image_id, image path,
     current_path = os.getcwd()
-    os.chdir(get_specie_dir(specie))
     get_specie_page(specie)
-    os.chdir(current_path)
 
 def get_bird_id(href):
     return href.split('&')[1].split('=')[1]
@@ -50,30 +54,33 @@ def write_family_csv(file_name, content):
                     specie_row['href'] = base_url+link.get('href')
             	    #print link.__dict__
                     #even count
+		    print count%2
 		    if(count%2 == 0):
 		    	specie_row['bird_id'] = get_bird_id(link.get('href'))
 			specie_row['common_name'] = link.next_element
 			specie_row['num_photos'] = link.next_sibling.strip('(').strip(')')
-		    else:
+                    	count = count+1
+			continue
 		    #odd count
+		    else:
+                    	count = count+1
 			specie_row['latin_name'] = link.next_element
     			specie_dir = get_specie_dir(specie_row)
 			#print specie_dir
 		    	#mkdir for the specie with Latin name
 			try:
+			    #print count
                     	    os.mkdir(specie_dir, dir_mode)
 			except OSError:
 			    print "Directory already exists %s" % specie_dir
-			#make the specie's image csv
-		 	write_image_csv(specie_row)	
 			#write row in csv
+			#writer.writerow(specie_row)
 			try:
 			    writer.writerow(specie_row)
 			except UnicodeEncodeError:
 			    print "Skipping %s" % specie_row['latin_name']
-			    print specie_row
-			    
-                    count = count+1
+		    #make the specie's image csv
+		    write_image_csv(specie_row)	
             except TypeError:
                 print "Not the correct link"
     csvfile.close()

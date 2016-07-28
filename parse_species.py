@@ -9,21 +9,33 @@ base_path = current_dir+"/image_db"
 groups_csv = base_path+"/groups.csv"
 dir_mode = 0775
 
+def get_image_url(url):
+    response = requests.get(url)
+    if(response.status_code == 200):
+	images = BeautifulSoup(response.content, 'html.parser').find_all('img')
+	for image in images:
+	    if(image.get('galleryimg') == 'no'):
+		return image.get('src')
+    else:
+        return "Broken link %s" % url
+
 def get_specie_page(specie):
     response = requests.get(specie['href'])
     print specie['latin_name']
     if(response.status_code == 200):
     	page_content = BeautifulSoup(response.content, 'html.parser')
-	#for dropdown in page_content.find_all('select'):
-	#    print dropdown.__dict__
-        print os.getcwd()
+        #print os.getcwd()
 	file_name = get_specie_dir(specie)+"/"+specie['latin_name'].lower().replace(" ","_")+".csv"
 	with open(file_name, 'wb') as csvfile:
 	    fieldnames = ['page_url', 'image_url'] 
-	    writer = csv.DictWriter(csvfile)
-	for option in page_content.find_all('option'):
-	    page_url = base_url +"/"+option.parent.get('onchange').split('+')[0].split('(')[1].strip("'")+option.get('value')
-        csvfile.close()
+	    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+	    writer.writeheader()
+	    for option in page_content.find_all('option'):
+	    	page_url = base_url +"/"+option.parent.get('onchange').split('+')[0].split('(')[1].strip("'")+option.get('value')
+		if "Bird_Group_ID" not in page_url:
+	    	    #print get_image_url(page_url)
+	    	    writer.writerow({'page_url':page_url, 'image_url':get_image_url(page_url)})
+    	csvfile.close()
 	return "Page parsed"
     else:
         return "Error in %s page" % specie['latin_name']
@@ -53,13 +65,11 @@ def write_family_csv(file_name, content):
                 if(link.get('class')[0] == 'mlink'):
                     specie_row['href'] = base_url+link.get('href')
             	    #print link.__dict__
-                    #even count
-		    print count%2
 		    if(count%2 == 0):
+                    	count = count+1
 		    	specie_row['bird_id'] = get_bird_id(link.get('href'))
 			specie_row['common_name'] = link.next_element
 			specie_row['num_photos'] = link.next_sibling.strip('(').strip(')')
-                    	count = count+1
 			continue
 		    #odd count
 		    else:

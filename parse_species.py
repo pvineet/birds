@@ -67,7 +67,7 @@ def write_family_csv(file_name, content):
 	for link in content:
             try:
                 if(link.get('class')[0] == 'mlink'):
-                    specie_row['href'] = base_url+link.get('href')
+                    specie_row['href'] = base_url+link.get('href').replace('\\','/')
             	    #print link.__dict__
 		    if(count%2 == 0):
                     	count = count+1

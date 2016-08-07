@@ -2,4 +2,4 @@
 =======
 To generate the database
 ------------------------
-#source gen_db
+*source gen_db

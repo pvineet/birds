@@ -33,10 +33,11 @@ def get_specie_page(specie):
             writer.writeheader()
             count = 0
             for option in page_content.find_all('option'):
+                print option
                 page_url = base_url +"/"+option.parent.get('onchange').split('+')[0].split('(')[1].strip("'")+option.get('value')
                 if "Bird_Group_ID" not in page_url:
                     #print get_image_url(page_url)
-                    urllib.urlretrieve(get_image_url(page_url), get_specie_dir(specie)+"/"+str(count)+".jpg")
+                    #urllib.urlretrieve(get_image_url(page_url), get_specie_dir(specie)+"/"+str(count)+".jpg")
                     count = count+1
                     writer.writerow({'page_url':page_url, 'image_url':get_image_url(page_url)})
         csvfile.close()

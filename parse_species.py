@@ -28,18 +28,23 @@ def get_specie_page(specie):
         #print os.getcwd()
         file_name = get_specie_dir(specie)+"/"+specie['latin_name'].lower().replace(" ","_")+".csv"
         with open(file_name, 'wb') as csvfile:
-            fieldnames = ['page_url', 'image_url']
+            fieldnames = ['page_url', 'image_url', 'adult', 'juvenile', 'male', 'female', 'flight']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
             count = 0
             for option in page_content.find_all('option'):
-                print option
+		adult = '0'
+		juvenile = '0'
+		male = '0'
+		female = '0'
+		flight = '0'
+                print option.text
                 page_url = base_url +"/"+option.parent.get('onchange').split('+')[0].split('(')[1].strip("'")+option.get('value')
                 if "Bird_Group_ID" not in page_url:
                     #print get_image_url(page_url)
                     #urllib.urlretrieve(get_image_url(page_url), get_specie_dir(specie)+"/"+str(count)+".jpg")
                     count = count+1
-                    writer.writerow({'page_url':page_url, 'image_url':get_image_url(page_url)})
+                    writer.writerow({'page_url':page_url, 'image_url':get_image_url(page_url), 'adult':adult, 'juvenile':juvenile, 'male':male, 'female':female, 'flight':flight})
         csvfile.close()
 	return "Page parsed"
     else:
@@ -136,6 +141,10 @@ def get_specie(group):
 
 with open(groups_csv) as csvfile:
     reader = csv.DictReader(csvfile)
+    #Skip rows to continue
+    for i in range(0,4):
+        next(reader)
+
     for row in reader:
 	get_specie(row['group_name'].lower())
 csvfile.close()

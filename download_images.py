@@ -1,12 +1,15 @@
 import os, csv
 import urllib
 
+num_lines = 0
 def write_image_csv(csv_file, image_url, image_file):
     with open(csv_file, 'a') as csvfile:
         fieldnames = ['image_url', 'image_file']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        urllib.urlretrieve(image_url,image_file)
-        writer.writerow({'image_url':image_url, 'image_file':image_file})
+        if not image_url == '':
+	    urllib.urlretrieve(image_url,image_file)
+            writer.writerow({'image_url':image_url, 'image_file':image_file})
+	
 
 current_path = os.getcwd()
 image_db_path = current_path+"/image_db"

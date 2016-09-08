@@ -3,7 +3,7 @@
 To generate the database
 ------------------------
 $ source gen_db
-This step will not download images
+#This step will not download images
 
 To download images
 --------------------

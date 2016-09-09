@@ -38,7 +38,7 @@ def get_specie_page(specie):
 		male = '0'
 		female = '0'
 		flight = '0'
-                print option.text
+                #print "%s" % UnicodeDammit(option.text, ["windows-1252"], smart_quotes_to="ascii").unicode_markup
                 page_url = base_url +"/"+option.parent.get('onchange').split('+')[0].split('(')[1].strip("'")+option.get('value')
                 if "Bird_Group_ID" not in page_url:
                     #print get_image_url(page_url)
@@ -142,8 +142,8 @@ def get_specie(group):
 with open(groups_csv) as csvfile:
     reader = csv.DictReader(csvfile)
     #Skip rows to continue
-    for i in range(0,4):
-        next(reader)
+    #for i in range(0,4):
+    #    next(reader)
 
     for row in reader:
 	get_specie(row['group_name'].lower())

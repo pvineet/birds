@@ -20,6 +20,16 @@ os.chdir(image_db_path)
 with open('groups.csv', 'rb') as groups_csvfile:
     GroupsDictReader = csv.reader(groups_csvfile)
     next(GroupsDictReader)
+    next(GroupsDictReader)
+    next(GroupsDictReader)
+    next(GroupsDictReader)
+    next(GroupsDictReader)
+    next(GroupsDictReader)
+    next(GroupsDictReader)
+    next(GroupsDictReader)
+    next(GroupsDictReader)
+    next(GroupsDictReader)
+    next(GroupsDictReader)
     for row in GroupsDictReader:
         print row
         #enter the spefic group dir
@@ -58,6 +68,7 @@ with open('groups.csv', 'rb') as groups_csvfile:
                             for i in range(0,num_lines):
                                 next(CurrSpecieDictReader)
                                 count = count+1
+				print count
                             for specie_row in CurrSpecieDictReader:
                                 print specie_row
                                 image_file = os.getcwd()+"/"+str(count)+".jpg"

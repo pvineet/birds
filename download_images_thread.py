@@ -1,6 +1,6 @@
 import os, csv
 import urllib
-import thread
+from threading import Thread
 
 num_lines = 0
 def write_image_csv(csv_file, image_url, image_file):
@@ -65,6 +65,7 @@ image_db_path = current_path+"/image_db"
 print "image_db dir exists - %s" % (os.path.isdir(image_db_path))
 #cd to images_db
 os.chdir(image_db_path)
+thread_list = []
 #open groups.csv
 with open('groups.csv', 'rb') as groups_csvfile:
     GroupsDictReader = csv.reader(groups_csvfile)
@@ -72,7 +73,11 @@ with open('groups.csv', 'rb') as groups_csvfile:
     for row in GroupsDictReader:
         print row
         curr_grp_name = row[0].lower()
-	try:
-   	    thread.start_new_thread( download_group, (curr_grp_name,) )
-	except:
-   	    print "Error: unable to start thread %s" % curr_grp_name
+        thread_list.append(Thread(target=download_group, args=(curr_grp_name,)))
+    print thread_list
+for thread in thread_list:
+    thread.start()
+
+for thread in thread_list:
+    thread.join()
+

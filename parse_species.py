@@ -139,7 +139,7 @@ def get_specie(group):
     with open(file_name) as csvfile:
         reader = csv.DictReader(csvfile)
 	#Add skip logic here
-	for i in range(0,32):
+	for i in range(0,38):
 	    next(reader)
 
 	for row in reader:

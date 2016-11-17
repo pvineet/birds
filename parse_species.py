@@ -41,8 +41,11 @@ def get_specie_page(specie):
                 #print "%s" % UnicodeDammit(option.text, ["windows-1252"], smart_quotes_to="ascii").unicode_markup
                 page_url = base_url +"/"+option.parent.get('onchange').split('+')[0].split('(')[1].strip("'")+option.get('value')
                 if "Bird_Group_ID" not in page_url:
-                    #print get_image_url(page_url)
-                    #urllib.urlretrieve(get_image_url(page_url), get_specie_dir(specie)+"/"+str(count)+".jpg")
+                    print get_image_url(page_url)
+                    try:
+			urllib.urlretrieve(get_image_url(page_url), get_specie_dir(specie)+"/"+str(count)+".jpg")
+		    except:
+			print "Image missing %s" % specie
                     count = count+1
                     writer.writerow({'page_url':page_url, 'image_url':get_image_url(page_url), 'adult':adult, 'juvenile':juvenile, 'male':male, 'female':female, 'flight':flight})
         csvfile.close()
@@ -135,6 +138,10 @@ def get_specie(group):
     file_name = group+".csv"
     with open(file_name) as csvfile:
         reader = csv.DictReader(csvfile)
+	#Add skip logic here
+	for i in range(0,30):
+	    next(reader)
+
 	for row in reader:
 	    print row['family_name']
      	    print get_family_page(row)
@@ -142,9 +149,10 @@ def get_specie(group):
 with open(groups_csv) as csvfile:
     reader = csv.DictReader(csvfile)
     #Skip rows to continue
-    #for i in range(0,4):
+    #for i in range(0,11):
     #    next(reader)
 
     for row in reader:
-	get_specie(row['group_name'].lower())
+	if row['group_name'].lower()== 'passeriformes':
+	    get_specie(row['group_name'].lower())
 csvfile.close()

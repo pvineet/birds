@@ -138,9 +138,9 @@ def get_specie(group):
     file_name = group+".csv"
     with open(file_name) as csvfile:
         reader = csv.DictReader(csvfile)
-	#Add skip logic here
-	for i in range(0,38):
-	    next(reader)
+	#Add family skip logic here
+	#for i in range(0,56):
+	#    next(reader)
 
 	for row in reader:
 	    print row['family_name']

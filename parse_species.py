@@ -26,7 +26,13 @@ def get_specie_page(specie):
     if(response.status_code == 200):
     	page_content = BeautifulSoup(response.content, 'html.parser')
         #print os.getcwd()
+        touch_file = get_specie_dir(specie)+"/"+specie['latin_name'].lower().replace(" ","_")+".done"
+        if os.path.isfile(touch_file):
+            return "Already downloaded the images %s" % touch_file
         file_name = get_specie_dir(specie)+"/"+specie['latin_name'].lower().replace(" ","_")+".csv"
+        #check if the csv file exists
+        if os.path.isfile(file_name):
+            print file_name, "exists!!"
         with open(file_name, 'wb') as csvfile:
             fieldnames = ['page_url', 'image_url', 'adult', 'juvenile', 'male', 'female', 'flight']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -49,6 +55,8 @@ def get_specie_page(specie):
                     count = count+1
                     writer.writerow({'page_url':page_url, 'image_url':get_image_url(page_url), 'adult':adult, 'juvenile':juvenile, 'male':male, 'female':female, 'flight':flight})
         csvfile.close()
+        #Touch a file to indicate this specie's images have been downloaded
+        open(touch_file, 'a').close()
 	return "Page parsed"
     else:
         return "Error in %s page" % specie['latin_name']
@@ -61,7 +69,7 @@ def write_image_csv(specie):
 #we need specie name, page href, 
 #We dump image_id, image path,
     current_path = os.getcwd()
-    get_specie_page(specie)
+    print get_specie_page(specie)
 
 def get_bird_id(href):
     return href.split('&')[1].split('=')[1]
@@ -138,13 +146,10 @@ def get_specie(group):
     file_name = group+".csv"
     with open(file_name) as csvfile:
         reader = csv.DictReader(csvfile)
-	#Add family skip logic here
-	#for i in range(0,56):
-	#    next(reader)
-
-	for row in reader:
-	    print row['family_name']
-     	    print get_family_page(row)
+        for row in reader:
+            msg = get_family_page(row)
+            #print msg
+            print row['family_name']
 
 with open(groups_csv) as csvfile:
     reader = csv.DictReader(csvfile)
@@ -153,6 +158,6 @@ with open(groups_csv) as csvfile:
     #    next(reader)
 
     for row in reader:
-	if row['group_name'].lower()== 'passeriformes':
-	    get_specie(row['group_name'].lower())
+	    #if row['group_name'].lower()== 'passeriformes':
+        get_specie(row['group_name'].lower())
 csvfile.close()

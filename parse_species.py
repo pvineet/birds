@@ -117,7 +117,7 @@ def write_family_csv(file_name, content):
     csvfile.close()
  
 def cd_family_dir(family_name, content):
-    print family_name
+    print(family_name)
     group_dir = os.getcwd()
     family_dir = group_dir+"/"+family_name
     # cd family dir
@@ -142,7 +142,7 @@ def get_family_page(row):
 
 def get_specie(group):
     os.chdir(base_path+"/"+group)
-    print "In dir %s" % group
+    print("In dir %s" % group)
     file_name = group+".csv"
     with open(file_name) as csvfile:
         reader = csv.DictReader(csvfile)

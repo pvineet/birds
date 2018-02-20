@@ -12,7 +12,7 @@ def get_num_photos(string):
 
 def write_group_csv(group_name, content):
     file_name = group_name.lower()+".csv"
-    print file_name
+    print(file_name)
     with open(file_name, 'wb') as csvfile:
         fieldnames = ['family_name', 'href', 'num_photos']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -25,7 +25,7 @@ def write_group_csv(group_name, content):
                     name, num_photos = get_num_photos(link.next_element)
                     writer.writerow({'family_name': name, 'href': base_url+href, 'num_photos': num_photos})
             except TypeError:
-                print "Not the correct link"
+                print("Not the correct link")
 
 def get_family(row):
     response =  requests.get(row['href'])
@@ -39,5 +39,5 @@ def get_family(row):
 with open(read_file) as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
-        print get_family(row)
+        print(get_family(row))
 

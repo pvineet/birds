@@ -19,14 +19,14 @@ def parse_images_page(response):
                     href = link.get('href')
                     writer.writerow({'group_name': link.next_element, 'href': base_url+href})
             except TypeError:
-                print "Not the correct link"
+                print("Not the correct link")
     return 0
 
 response = requests.get(bird_images_url)
 #print type(response.status_code)
 if(response.status_code == 200):
-    print "Page available"
+    print("Page available")
 else:
-    print "Error in reaching bird images page"
+    print("Error in reaching bird images page")
 
 parse_images_page(response)

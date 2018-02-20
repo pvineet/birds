@@ -12,7 +12,7 @@ def make_dir(name):
     try:
         os.mkdir(path, dir_mode)
     except OSError:
-        print "Directory %s already exists" % path
+        print("Directory %s already exists" % path)
 
 def make_family_dir(name):
     file_name = name+".csv"
@@ -27,12 +27,12 @@ def make_family_dir(name):
 try:
     os.mkdir(base_path, dir_mode)
 except OSError:
-    print "Directory %s already exists" % base_path
+    print("Directory %s already exists" % base_path)
 
 with open(groups_csv) as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
-	print row['group_name']
+	print(row['group_name'])
         make_dir(row['group_name'].lower())
 	make_family_dir(row['group_name'].lower())
 csvfile.close()

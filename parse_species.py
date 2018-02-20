@@ -22,7 +22,7 @@ def get_image_url(url):
 
 def get_specie_page(specie):
     response = requests.get(specie['href'])
-    print specie['latin_name']
+    print(specie['latin_name'])
     if(response.status_code == 200):
     	page_content = BeautifulSoup(response.content, 'html.parser')
         #print os.getcwd()
@@ -32,7 +32,7 @@ def get_specie_page(specie):
         file_name = get_specie_dir(specie)+"/"+specie['latin_name'].lower().replace(" ","_")+".csv"
         #check if the csv file exists
         if os.path.isfile(file_name):
-            print file_name, "exists!!"
+            print(file_name, "exists!!")
         with open(file_name, 'wb') as csvfile:
             fieldnames = ['page_url', 'image_url', 'adult', 'juvenile', 'male', 'female', 'flight']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -47,11 +47,11 @@ def get_specie_page(specie):
                 #print "%s" % UnicodeDammit(option.text, ["windows-1252"], smart_quotes_to="ascii").unicode_markup
                 page_url = base_url +"/"+option.parent.get('onchange').split('+')[0].split('(')[1].strip("'")+option.get('value')
                 if "Bird_Group_ID" not in page_url:
-                    print get_image_url(page_url)
+                    print(get_image_url(page_url))
                     try:
 			urllib.urlretrieve(get_image_url(page_url), get_specie_dir(specie)+"/"+str(count)+".jpg")
 		    except:
-			print "Image missing %s" % specie
+			print("Image missing %s" % specie)
                     count = count+1
                     writer.writerow({'page_url':page_url, 'image_url':get_image_url(page_url), 'adult':adult, 'juvenile':juvenile, 'male':male, 'female':female, 'flight':flight})
         csvfile.close()
@@ -69,7 +69,7 @@ def write_image_csv(specie):
 #we need specie name, page href, 
 #We dump image_id, image path,
     current_path = os.getcwd()
-    print get_specie_page(specie)
+    print(get_specie_page(specie))
 
 def get_bird_id(href):
     return href.split('&')[1].split('=')[1]
@@ -103,17 +103,17 @@ def write_family_csv(file_name, content):
 			    #print count
                     	    os.mkdir(specie_dir, dir_mode)
 			except OSError:
-			    print "Directory already exists %s" % specie_dir
+			    print("Directory already exists %s" % specie_dir)
 			#write row in csv
 			#writer.writerow(specie_row)
 			try:
 			    writer.writerow(specie_row)
 			except UnicodeEncodeError:
-			    print "Skipping %s" % specie_row['latin_name']
+			    print("Skipping %s" % specie_row['latin_name'])
 		    #make the specie's image csv
 		    write_image_csv(specie_row)	
             except TypeError:
-                print "Not the correct link"
+                print("Not the correct link")
     csvfile.close()
  
 def cd_family_dir(family_name, content):
@@ -149,7 +149,7 @@ def get_specie(group):
         for row in reader:
             msg = get_family_page(row)
             #print msg
-            print row['family_name']
+            print(row['family_name'])
 
 with open(groups_csv) as csvfile:
     reader = csv.DictReader(csvfile)

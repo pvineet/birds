@@ -8,7 +8,7 @@ groups = []
 
 def parse_images_page(response):
     page_content = BeautifulSoup(response.content, 'html.parser')
-    with open('groups.csv', 'wb') as csvfile:
+    with open('groups.csv', 'w') as csvfile:
         fieldnames = ['group_name', 'href']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
@@ -30,3 +30,4 @@ else:
     print("Error in reaching bird images page")
 
 parse_images_page(response)
+

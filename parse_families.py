@@ -13,7 +13,7 @@ def get_num_photos(string):
 def write_group_csv(group_name, content):
     file_name = group_name.lower()+".csv"
     print(file_name)
-    with open(file_name, 'wb') as csvfile:
+    with open(file_name, 'w') as csvfile:
         fieldnames = ['family_name', 'href', 'num_photos']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
@@ -30,8 +30,8 @@ def write_group_csv(group_name, content):
 def get_family(row):
     response =  requests.get(row['href'])
     if(response.status_code == 200):
-    	page_content = BeautifulSoup(response.content, 'html.parser')
-    	write_group_csv(row['group_name'], page_content.find_all('a'))
+        page_content = BeautifulSoup(response.content, 'html.parser')
+        write_group_csv(row['group_name'], page_content.find_all('a'))
         return "Done %s!" %row['group_name']
     else:
         return "Error in %s page" %row['group_name']

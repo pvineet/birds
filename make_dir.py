@@ -3,7 +3,7 @@ import csv
 
 groups_csv = "groups.csv"
 
-dir_mode = 0775
+dir_mode = 0o775
 current_dir = os.getcwd()
 base_path = current_dir +"/image_db"
 
@@ -18,9 +18,9 @@ def make_family_dir(name):
     file_name = name+".csv"
     with open(file_name) as family_csvfile:
         reader = csv.DictReader(family_csvfile)
-	for row in reader:
+        for row in reader:
             path = name+"/"+row['family_name'].lower()
-	    make_dir(path)
+            make_dir(path)
     family_csvfile.close()
     os.rename(current_dir + "/" + file_name, base_path + "/" + name + "/" + file_name)
 
@@ -32,9 +32,9 @@ except OSError:
 with open(groups_csv) as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
-	print(row['group_name'])
+        print(row['group_name'])
         make_dir(row['group_name'].lower())
-	make_family_dir(row['group_name'].lower())
+        make_family_dir(row['group_name'].lower())
 csvfile.close()
 #Move groups.csv to image_db
 os.rename(current_dir+"/"+groups_csv, base_path+"/"+groups_csv)	

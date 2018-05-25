@@ -49,7 +49,7 @@ def get_specie_page(specie):
                 if "Bird_Group_ID" not in page_url:
                     print get_image_url(page_url)
                     try:
-			urllib.urlretrieve(get_image_url(page_url), get_specie_dir(specie)+"/"+str(count)+".jpg")
+			urllib.urlretrieve(get_image_url(page_url), get_specie_dir(specie)+"/"+specie['latin_name']+str(count)+".jpg")
 		    except:
 			print "Image missing %s" % specie
                     count = count+1
